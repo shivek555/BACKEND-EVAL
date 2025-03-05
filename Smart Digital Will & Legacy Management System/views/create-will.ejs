@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Will - Smart Will & Legacy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            margin-top: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            width: 60%;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            text-align: center;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        input, button, select {
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+        }
+        input, select {
+            width: 80%;
+            margin-right: 10px;
+        }
+        button {
+            background: #ff9f43;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 10px;
+        }
+        button:hover {
+            background: #ff6f00;
+        }
+        .beneficiary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Your Will</h2>
+        <form action="/api/create-will" method="POST" id="will-form">
+            <div class="input-group">
+                <input type="text" id="testatorName" name="testatorName" placeholder="Your Full Name" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="testatorAddress" name="testatorAddress" placeholder="Your Address" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="executorName" name="executorName" placeholder="executor Name" required>
+            </div>
+            <div class="input-group">
+                <input type="date" placeholder="Date of Birth" required>
+            </div>
+            <div class="input-group">
+                <select required>
+                    <option value="">Select Relationship Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Divorced">Divorced</option>
+                </select>
+            </div>
+            <div id="beneficiaries">
+                <div class="beneficiary" id="beneficiaries" name="beneficiaries">
+                    <input type="text" placeholder="Beneficiary Name" class="beneficiary-name" required>
+                    <input type="number" placeholder="Percentage (%)" class="beneficiary-percentage" min="1" max="100" required>
+                </div>
+            </div>
+            <button type="button" onclick="addBeneficiary()">Add More</button>
+            <button type="button" onclick="validateDistribution()">Submit</button>
+        </form>
+        <button class="home-button" onclick="goHome()">Home</button>
+    </div>
+
+    <script>
+        
+        function addBeneficiary() {
+            let div = document.createElement("div");
+            div.classList.add("beneficiary");
+            div.innerHTML = `
+                <input type="text" placeholder="Beneficiary Name" class="beneficiary-name" required>
+                <input type="number" placeholder="Percentage (%)" class="beneficiary-percentage" min="1" max="100" required>
+            `;
+            document.getElementById("beneficiaries").appendChild(div);
+        }
+
+        function validateDistribution() {
+            let percentages = document.querySelectorAll(".beneficiary-percentage");
+            let total = 0;
+            percentages.forEach(input => total += Number(input.value));
+            if (total !== 100) {
+                alert("Total distribution must be exactly 100%.");
+            } else {
+                alert("Will Created Successfully!");
+                document.getElementById("will-form").submit();
+            }
+        }
+        function goHome() {
+            window.location.href = '/dashboard'; 
+        }
+    </script>
+</body>
+</html>

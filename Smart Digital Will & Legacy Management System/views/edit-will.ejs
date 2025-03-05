@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Beneficiaries - Smart Will & Legacy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            margin-top: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            width: 60%;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            text-align: center;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+        }
+        input {
+            width: 45%;
+            margin-right: 10px;
+        }
+        button {
+            background: #ff9f43;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+        button:hover {
+            background: #ff6f00;
+        }
+        .beneficiary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .remove-btn {
+            background: #e74c3c;
+            padding: 8px;
+        }
+        .remove-btn:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Manage Beneficiaries</h2>
+        <div id="beneficiaries"></div>
+        <button onclick="addBeneficiary()">Add More</button>
+        <button onclick="validateDistribution()">Submit</button>
+        <button class="home-button" onclick="goHome()">Home</button>
+    </div>
+
+    <script>
+        let beneficiaries = [];
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            let response = await fetch("/api/get-beneficiaries");
+            let data = await response.json();
+            if (data.beneficiaries) {
+                data.beneficiaries.forEach(beneficiary => {
+                    beneficiaries.push(beneficiary);
+                    addBeneficiary(beneficiary.name, beneficiary.percentage);
+                });
+            }
+        });
+
+        function addBeneficiary(name = "", percentage = "") {
+            let div = document.createElement("div");
+            div.classList.add("beneficiary");
+            div.innerHTML = `
+                <input type="text" placeholder="Beneficiary Name" class="beneficiary-name" value="${name}">
+                <input type="number" placeholder="Percentage (%)" class="beneficiary-percentage" min="1" max="100" value="${percentage}">
+                <button class="remove-btn" onclick="removeBeneficiary(this)">Remove</button>
+            `;
+            document.getElementById("beneficiaries").appendChild(div);
+        }
+
+        function removeBeneficiary(button) {
+            let name = button.parentElement.querySelector(".beneficiary-name").value.trim();
+            let percentage = Number(button.parentElement.querySelector(".beneficiary-percentage").value);
+            let index = beneficiaries.findIndex(beneficiary => beneficiary.name === name && beneficiary.percentage === percentage);
+            if (index !== -1) {
+                beneficiaries.splice(index, 1);
+            }
+            button.parentElement.remove();
+        }
+
+        async function validateDistribution() {
+            let total = 0;
+            let beneficiaryList = [];
+
+            beneficiaries.forEach(beneficiary => {
+                total += beneficiary.percentage;
+                beneficiaryList.push({ name: beneficiary.name, percentage: beneficiary.percentage });
+            });
+
+            let newBeneficiaries = document.querySelectorAll(".beneficiary");
+            newBeneficiaries.forEach(div => {
+                let name = div.querySelector(".beneficiary-name").value.trim();
+                let percentage = Number(div.querySelector(".beneficiary-percentage").value);
+                if (name && percentage) {
+                    let index = beneficiaries.findIndex(beneficiary => beneficiary.name === name && beneficiary.percentage === percentage);
+                    if (index === -1) {
+                        beneficiaries.push({ name, percentage });
+                        total += percentage;
+                        beneficiaryList.push({ name, percentage });
+                    }
+                }
+            });
+
+            if (total !== 100) {
+                alert("Total distribution must be exactly 100%.");
+            } else {
+                let response = await fetch("/api/update-beneficiaries", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ beneficiaries: beneficiaryList })
+                });
+
+                let data = await response.json();
+                alert(data.message);
+            }
+        }
+
+        function goHome() {
+            window.location.href = '/dashboard'; 
+        }
+    </script>
+</body>
+</html>
