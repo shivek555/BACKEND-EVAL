@@ -81,6 +81,23 @@
             0% { transform: rotate(-5deg); }
             100% { transform: rotate(5deg); }
         }
+        a {
+            text-decoration: none;
+            color: #fff;
+            transition: color 0.3s ease;
+        }
+            
+        a:hover {
+            color: #ccc;
+        }
+            
+        .text-warning {
+            color: #2ecc71;
+        }
+        
+        .text-warning:hover {
+            color: #27ae60;
+        }
     </style>
 </head>
 <body>
@@ -127,10 +144,12 @@
             alert(data.message);
     
             if (response.ok) {
-                window.location.href = "/dashboard"; // Redirect to dashboard after login
+                window.location.href = "/dashboard"; 
             }
         });
     </script>
     
 </body>
 </html>
+
+
