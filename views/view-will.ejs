@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Will Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 70%;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            text-align: justify;
+            position: relative;
+        }
+        .stamp-header {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .signature {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sign-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #ff9f43;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #ff6f00;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container" id="willContent">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8VR0harpHDjUKrmv5_z3lytg5MbHLKY7NWA&s" alt="Indian Stamp Paper Header" class="stamp-header">
+        <h2 style="text-align: center;">LAST WILL AND TESTAMENT</h2>
+        
+        <% if (wills.length > 0) { %>
+            <% let will = wills[0]; %>
+            <p>I, <strong id="testatorName"><%= will.testatorName %></strong>, residing at <strong id="testatorAddress"><%= will.testatorAddress %></strong>, being of sound mind and disposing memory, do hereby declare this to be my Last Will and Testament.</p>
+            
+            <h3>1. Appointment of Executor</h3>
+            <p>I hereby appoint <strong id="executorName"><%= will.executorName %></strong> as the executor of my will, who shall ensure the proper execution of my last wishes.</p>
+            
+            <h3>2. Distribution of Assets</h3>
+            <p>The following beneficiaries shall receive the respective shares of my estate:</p>
+            <ul id="beneficiariesList">
+                <% will.beneficiaries.forEach(ben => { %>
+                    <li><strong><%= ben.name %></strong>: <%= ben.percentage %>%</li>
+                <% }) %>
+            </ul>
+
+            <h3>3. Declaration</h3>
+            <p>In witness whereof, I have signed this will on this day <strong id="date"><%= will.dateCreated %></strong> in the presence of the undersigned witnesses.</p>
+        <% } else { %>
+            <p>No will data available.</p>
+        <% } %>
+        
+        <div class="signature">
+            <div class="sign-box">
+                <p>_______________________</p>
+                <p>Testator's Signature</p>
+            </div>
+            <div class="sign-box">
+                <p>_______________________</p>
+                <p>Witness 1 Signature</p>
+            </div>
+            <div class="sign-box">
+                <p>_______________________</p>
+                <p>Witness 2 Signature</p>
+            </div>
+        </div>
+    </div>
+    
+    <button onclick="downloadWill()">Download Will</button>
+    <button onclick="window.location.href='/dashboard'">Home</button>
+    
+    <script>
+        function downloadWill() {
+            const element = document.getElementById('willContent');
+            const opt = {
+                margin: 10,
+                filename: 'Legal_Will.pdf',
+                image: { type: 'jpeg', quality: 1.0 },
+                html2canvas: { scale: 4, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            html2pdf().from(element).set(opt).save();
+        }
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+</body>
+</html>

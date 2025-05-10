@@ -1,0 +1,109 @@
+/* styles.css - Sexy & Animated UI for Smart Digital Will */
+
+/* General Styles */
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Background Animation */
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.wave-animation {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+}
+
+/* Hero Section */
+.hero-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.will-svg {
+    width: 80px;
+    height: 100px;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Floating SVGs */
+.floating-svgs {
+    position: absolute;
+    width: 100%;
+    top: 10%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.floating-svg {
+    width: 80px;
+    opacity: 0.8;
+}
+
+.left {
+    position: absolute;
+    left: 5%;
+    top: 30%;
+    animation: float-left 4s ease-in-out infinite;
+}
+
+.right {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    animation: float-right 4s ease-in-out infinite;
+}
+
+@keyframes float-left {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(-5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes float-right {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(10px) rotate(5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Glowing Button */
+.pulse-button {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(255, 75, 43, 0.8);
+}
+
+.pulse-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 75, 43, 1);
+}
